@@ -9,7 +9,7 @@ import { FeedEpisodes } from '../../domain/feed'
 
 const Episodes: NextPage = () => {
 
-  const [episodes, setEpisodes] = useState<FeedEpisodes | null>(null)
+  const [episodes, setEpisodes] = useState<FeedEpisodes | undefined>(undefined)
   const [isLoading, setLoading] = useState(false)
 
   useEffect(() => {
