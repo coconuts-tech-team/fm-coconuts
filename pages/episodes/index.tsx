@@ -1,17 +1,37 @@
-import type { GetServerSideProps, NextPage } from 'next'
+import { useState, useEffect } from 'react'
+import type { NextPage } from 'next'
 import Parser from 'rss-parser'
 import { CardComponent } from '../../components/cardComponent'
 import { Card } from '../../domain/card'
 import Link from 'next/link'
 
-import { FeedEpisode } from '../../domain/feed'
+import { FeedEpisodes } from '../../domain/feed'
 
-const Episodes: NextPage = ({ data }) => {
-  const episode = data as FeedEpisode
+const Episodes: NextPage = () => {
+
+  const [episodes, setEpisodes] = useState<FeedEpisodes | null>(null)
+  const [isLoading, setLoading] = useState(false)
+
+  useEffect(() => {
+    setLoading(true)
+
+    const parser = new Parser()
+    parser.parseURL('https://anchor.fm/s/4881bfd0/podcast/rss')
+      .then((feeds) => {
+        const feedEpisodes = feeds as FeedEpisodes
+        setEpisodes(feedEpisodes)
+        setLoading(false)
+      })
+      .catch((err: any) => console.error(err))
+  }, [])
+
+  if (isLoading) return <p>Loading...</p>
+  if (!episodes) return <p>No data found.</p>
+
   return (
     <div className="container">
       <div className="columns is-multiline">
-        {episode.items.map((item, index) => (
+        {episodes.items.map((item, index) => (
           <div className="column is-3">
             <Link href={`/episodes/${item.itunes.episode}`}>
               <a>
@@ -23,15 +43,6 @@ const Episodes: NextPage = ({ data }) => {
       </div>
     </div>
   )
-}
-
-
-export const getServerSideProps = async (): Promise<GetServerSideProps> => {
-  const parser = new Parser()
-  const feed = await parser.parseURL('https://anchor.fm/s/4881bfd0/podcast/rss')
-    .catch((err: any) => console.error(err));
-
-  return { props: { data: feed } }
 }
 
 export default Episodes

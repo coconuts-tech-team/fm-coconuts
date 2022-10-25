@@ -23,12 +23,12 @@ export type FeedItem = {
   }
 }
 
-export type FeedEpisode = {
+export type FeedEpisodes = {
   items: FeedItem[]
 }
 
 export type Feed = {
-  episode: FeedEpisode,
+  episode: FeedEpisodes,
   feedUrl: string,
   image: {
     link: string,
