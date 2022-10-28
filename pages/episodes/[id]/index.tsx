@@ -1,40 +1,34 @@
-import { useState, useEffect } from 'react'
 import type { NextPage } from 'next'
+import { useEffect } from 'react'
 import { useRouter } from 'next/router'
-import Parser from 'rss-parser'
+import Link from 'next/link'
+import { useAtom, useAtomValue } from 'jotai'
 
-import { FeedEpisodes, FeedItem } from '../../../domain/feed'
+import { idAtom, feedAtom } from '../../../store'
 
 const Episode: NextPage = () => {
 
-  const [episode, setEpisode] = useState<FeedItem | undefined>(undefined)
-  const [isLoading, setLoading] = useState(false)
-
   const router = useRouter()
-  const id = router.query.id as string
+
+  const [id, setId] = useAtom(idAtom)
+  const feed = useAtomValue(feedAtom)
 
   useEffect(() => {
-    setLoading(true)
+    const idParam = router.query.id as string
+    setId(Number(idParam))
+    console.log(`useEffect set ${idParam}`, feed)
+  }, [router])
 
-    //TODO fetch parse作業は別コンポーネントで切り出す
-    const parser = new Parser()
-    parser.parseURL('https://anchor.fm/s/4881bfd0/podcast/rss')
-      .then((feeds) => {
-        const feedEpisodes = feeds as FeedEpisodes
-        const feedEpisode = feedEpisodes.items.find((item: FeedItem) => String(item.itunes.episode) === id)
-        setEpisode(feedEpisode)
-        setLoading(false)
-      })
-      .catch((err: any) => console.error(err))
-  }, [id])
-
-
-  if (isLoading) return <p>Loading...</p>
-  if (!episode) return <p>No data found.</p>
 
   return (
     <div>
-      {JSON.stringify(episode)}
+      <Link href="/episodes">
+        <a>
+          ←戻る
+        </a>
+      </Link>
+      <h1>episode : {id}</h1>
+      {JSON.stringify(feed)}
     </div>
   )
 }

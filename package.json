@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "bulma": "^0.9.4",
+    "jotai": "^1.8.6",
     "next": "12.2.5",
     "node-sass": "^7.0.3",
     "react": "18.2.0",
