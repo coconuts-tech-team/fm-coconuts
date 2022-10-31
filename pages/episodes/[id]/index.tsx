@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { useAtom, useAtomValue } from 'jotai'
@@ -19,7 +19,6 @@ const Episode: NextPage = () => {
     console.log(`useEffect set ${idParam}`, feed)
   }, [router])
 
-
   return (
     <div>
       <Link href="/episodes">
@@ -28,7 +27,12 @@ const Episode: NextPage = () => {
         </a>
       </Link>
       <h1>episode : {id}</h1>
-      {JSON.stringify(feed)}
+      <h2>{feed?.title}</h2>
+      {String(feed?.content).split(/(\n)/).map((content, index) => (
+        <React.Fragment key={index}>
+          {content}<br />
+        </React.Fragment>
+      ))}
     </div>
   )
 }
